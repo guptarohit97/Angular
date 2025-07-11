@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Appointment } from '../models/appointment';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -10,15 +10,21 @@ import { CommonModule, DatePipe } from '@angular/common';
   templateUrl: './appointment-list.html',
   styleUrl: './appointment-list.css'
 })
-export class AppointmentList {
+export class AppointmentList  implements OnInit{
   
-
+  
   newAppointmentTitle:string="";
   newAppointmentDate=new Date();
 
   appointments:Appointment[]=[];
 
   private count :number =0;
+
+  ngOnInit(): void {
+      let savedAppointments=localStorage.getItem("appointments")
+
+      this.appointments=savedAppointments?JSON.parse(savedAppointments):[];
+  }
 
   addAppointment() {
     if(this.newAppointmentTitle.trim().length>0 && this.newAppointmentDate){
@@ -29,6 +35,7 @@ export class AppointmentList {
       }
       this.appointments.push(newAppointment)
       // alert(this.newAppointmentTitle.length)
+      localStorage.setItem("appointments",JSON.stringify(this.appointments))
       
     }  
     this.newAppointmentTitle=""
@@ -36,6 +43,7 @@ export class AppointmentList {
   }
   deleteAppointment(index:number){
     this.appointments.splice(index,1)
+    localStorage.setItem("appointments",JSON.stringify(this.appointments))
   }
 
   
